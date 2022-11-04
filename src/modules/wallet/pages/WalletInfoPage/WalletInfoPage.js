@@ -1,5 +1,5 @@
-import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper } from "@mui/material";
 import React from "react";
+import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper } from "@mui/material";
 
 const WalletInfoPage = ({ mainWalletData }) => {
     const { tokens } = mainWalletData;
