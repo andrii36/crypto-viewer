@@ -20,6 +20,12 @@ export default (state = INITIAL_STATE, action) => {
                 walletSearchLoading: true,
             }
         }
+        case actionTypes.CLEAR_WALLET_ADDRESS: {
+            return {
+                ...state,
+                mainWalletData: {},
+            }
+        }
         default: {
             return state;
         }

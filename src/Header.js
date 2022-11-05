@@ -1,11 +1,21 @@
 import React from "react";
-import { AppBar, Container, Toolbar, Typography } from '@mui/material';
+import { AppBar, Container, Drawer, IconButton, Toolbar, Typography } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const Header = () => {
     return (
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="open drawer"
+                        sx={{ mr: 2 }}
+                    >
+                        <MenuIcon />
+                    </IconButton>
                     <Typography
                         variant="h6"
                         noWrap
@@ -21,9 +31,12 @@ const Header = () => {
                             textDecoration: 'none',
                         }}
                     >
-                        LOGO
+                        CryptoAura
                     </Typography>
                 </Toolbar>
+                <Drawer>
+
+                </Drawer>
             </Container>
         </AppBar>
     )

@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Container, Input, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const HomePage = ({mainWalletAddress, getDataByWalletAddress}) => {
     const [walletAddress, setWalletAddress] = React.useState('');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if(mainWalletAddress){
+            navigate('/wallet');
+            return;
+        };
+    }, [mainWalletAddress]);
 
     const handleWalletAddressChange = (e) => {
         setWalletAddress(e.target.value);
@@ -14,10 +21,6 @@ const HomePage = ({mainWalletAddress, getDataByWalletAddress}) => {
             getDataByWalletAddress(walletAddress);
             setWalletAddress('');
         }
-    }
-
-    if(mainWalletAddress){
-        navigate('/wallet')
     }
 
     return (

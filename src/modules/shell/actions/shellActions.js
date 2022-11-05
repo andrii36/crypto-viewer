@@ -13,3 +13,5 @@ export const getDataByWalletAddress = (walletAddress) => async (dispatch) => {
         console.log(error)
     }
 };
+
+export const clearWalletData = () => ({type: actionTypes.CLEAR_WALLET_ADDRESS});
