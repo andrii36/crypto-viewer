@@ -2,9 +2,18 @@ import React, { useEffect } from "react";
 import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, IconButton, Box } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from "react-router-dom";
+import styles from './WalletInfoPage.module.css';
+import json2mq from 'json2mq';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddress }) => {
     const navigate = useNavigate();
+
+    const matches = useMediaQuery(
+        json2mq({
+          maxWidth: 540,
+        }),
+      );
 
     const { tokens, ETH, address } = mainWalletData;
 
@@ -14,7 +23,7 @@ const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddres
 
     useEffect(() => {
         if (Object.keys(mainWalletData).length === 0) {
-            navigate('/');
+            return navigate('/');
         };
     }, [mainWalletData]);
 
@@ -70,8 +79,8 @@ const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddres
 
     return (
         <Grid container spacing={2}>
-            <Grid item xs={4}>
-                <Box sx={{ border: '1px grey solid', marginTop: '10px' }}>
+            <Grid item xs={matches ? 12 : 4} className={styles.currentAddress}>
+                <Box className={styles.currentAddressBox}>
                     <Typography>Current address:</Typography>
                     <Typography>{address}</Typography>
                     <IconButton edge="start" onClick={deleteHandler}>
@@ -79,7 +88,7 @@ const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddres
                     </IconButton>
                 </Box>
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={matches ? 12 : 8}>
                 <Typography variant="h5">Portfolio</Typography>
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
