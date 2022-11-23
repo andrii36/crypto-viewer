@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  background-image: url("https://static.vecteezy.com/system/resources/previews/002/282/910/original/elegant-white-background-free-vector.jpg");
+  background-size: cover;
+  min-height: 100vh;
 }
 
 .App-logo {
