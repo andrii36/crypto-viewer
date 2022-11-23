@@ -3,22 +3,40 @@ import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from "react-router-dom";
 
-const WalletInfoPage = ({ mainWalletData,  clearWalletData}) => {
+const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddress }) => {
     const navigate = useNavigate();
 
+    const { tokens, ETH, address } = mainWalletData;
+
     useEffect(() => {
-        if(Object.keys(mainWalletData).length === 0){
+        getDataByWalletAddress(address);
+    }, []);
+
+    useEffect(() => {
+        if (Object.keys(mainWalletData).length === 0) {
             navigate('/');
         };
     }, [mainWalletData]);
-
-    const { tokens, ETH, address } = mainWalletData;
 
     const convertWei = (wei, decimals) => {
         let balance = Number(wei) / Math.pow(10, decimals);
         if (decimals === "6") balance = balance.toFixed(2);
         return balance;
     };
+
+    const calculateUSDHoldings = (price, amount) => (price * amount).toFixed(2);
+
+    const calculateTotalTokensUSD = (tokens) => {
+        return tokens?.reduce((acc, { tokenInfo, rawBalance }) => {
+            const balance = convertWei(rawBalance, tokenInfo.decimals);
+            const price = tokenInfo.price ? `$${tokenInfo.price.rate}` : 0;
+            const balanceUSD = balance * price;
+            return acc + balanceUSD;
+        }, 0);
+    };
+
+    const mainCryptoBalance = convertWei(ETH?.rawBalance, 18);
+    const mainCryptoBalanceUSD = Number(calculateUSDHoldings(ETH?.price.rate, mainCryptoBalance));
 
     const shortenContractAddress = (fullAddress) => {
         return fullAddress?.substring(fullAddress.length - 12);
@@ -45,6 +63,7 @@ const WalletInfoPage = ({ mainWalletData,  clearWalletData}) => {
                 <TableCell align="right">...{contractAddress}</TableCell>
                 <TableCell align="right">{price}</TableCell>
                 <TableCell align="right">{`${balance} ${tokenInfo.symbol}`}</TableCell>
+                <TableCell align="right">${calculateUSDHoldings(price, balance)}</TableCell>
             </TableRow>
         )
     };
@@ -70,6 +89,7 @@ const WalletInfoPage = ({ mainWalletData,  clearWalletData}) => {
                                 <TableCell align="right">Contract Address</TableCell>
                                 <TableCell align="right">Price</TableCell>
                                 <TableCell align="right">Holdings</TableCell>
+                                <TableCell align="right">USD Holdings</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -79,12 +99,14 @@ const WalletInfoPage = ({ mainWalletData,  clearWalletData}) => {
                                 <TableCell component="th" scope="row">Etherium</TableCell>
                                 <TableCell align="right">...{shortenContractAddress(address)}</TableCell>
                                 <TableCell align="right">${ETH?.price.rate.toFixed(2)}</TableCell>
-                                <TableCell align="right">{convertWei(ETH?.rawBalance, 18)} Ether</TableCell>
+                                <TableCell align="right">{mainCryptoBalance} Ether</TableCell>
+                                <TableCell align="right">${mainCryptoBalanceUSD.toFixed(2)}</TableCell>
                             </TableRow>
                             {tokens?.map(renderTokenRow)}
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <Typography variant="h6">Total holdings: ${(calculateTotalTokensUSD(tokens) + mainCryptoBalanceUSD).toFixed(2)}</Typography>
             </Grid>
         </Grid>
     );
