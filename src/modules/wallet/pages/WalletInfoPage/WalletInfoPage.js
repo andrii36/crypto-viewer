@@ -1,19 +1,20 @@
-import React, { useEffect } from "react";
-import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, IconButton, Box } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, Box, Button } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from "react-router-dom";
 import styles from './WalletInfoPage.module.css';
 import json2mq from 'json2mq';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import CopyToClipboardButton from "../../../../sharedComponents/CopyToClickboardButton";
 
 const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddress }) => {
     const navigate = useNavigate();
 
     const matches = useMediaQuery(
         json2mq({
-          maxWidth: 540,
+            maxWidth: 540,
         }),
-      );
+    );
 
     const { tokens, ETH, address } = mainWalletData;
 
@@ -83,11 +84,20 @@ const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddres
         <Grid container spacing={2}>
             <Grid item xs={matches ? 12 : 4} className={styles.currentAddress}>
                 <Box className={styles.currentAddressBox}>
-                    <Typography>Current address:</Typography>
+                    <Typography>
+                        Current address:
+                    </Typography>
                     <Typography>{address}</Typography>
-                    <IconButton edge="start" onClick={deleteHandler}>
-                        <DeleteIcon />
-                    </IconButton>
+                    <Grid container >
+                        <Grid item xs={6}>
+                            <Button variant="outlined" startIcon={<DeleteIcon />} onClick={deleteHandler} size="small">
+                                Remove
+                            </Button>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <CopyToClipboardButton textToCopy={address} size='small' />
+                        </Grid>
+                    </Grid>
                 </Box>
             </Grid>
             <Grid item xs={matches ? 12 : 8}>
