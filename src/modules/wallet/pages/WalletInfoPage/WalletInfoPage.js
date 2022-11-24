@@ -23,7 +23,8 @@ const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddres
 
     useEffect(() => {
         if (Object.keys(mainWalletData).length === 0) {
-            return navigate('/');
+            navigate('/');
+            return;
         };
     }, [mainWalletData]);
 
