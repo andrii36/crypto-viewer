@@ -33,7 +33,7 @@ const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddres
         return balance;
     };
 
-    const calculateUSDHoldings = (price, amount) => (price * amount).toFixed(2);
+    const calculateUSDHoldings = (price, amount) => (price && amount) ? price * amount : 0;
 
     const calculateTotalTokensUSD = (tokens) => {
         return tokens?.reduce((acc, { tokenInfo, rawBalance }) => {
@@ -58,7 +58,7 @@ const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddres
     const renderTokenRow = ({ tokenInfo, rawBalance }) => {
 
         const balance = convertWei(rawBalance, tokenInfo.decimals);
-        const price = tokenInfo.price ? tokenInfo.price.rate : 0;
+        const price = tokenInfo.price ? tokenInfo.price.rate : null;
         const contractAddress = shortenContractAddress(tokenInfo.address);
         const balanceUSD = calculateUSDHoldings(price, balance);
 
@@ -71,9 +71,9 @@ const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddres
                     {tokenInfo.name}
                 </TableCell>
                 <TableCell align="right">...{contractAddress}</TableCell>
-                <TableCell align="right">${price.toFixed(2)}</TableCell>
+                <TableCell align="right">{price && `$${price.toFixed(2)}`}</TableCell>
                 <TableCell align="right">{`${balance} ${tokenInfo.symbol}`}</TableCell>
-                <TableCell align="right">${balanceUSD}</TableCell>
+                <TableCell align="right">${balanceUSD.toFixed(2)}</TableCell>
             </TableRow>
         )
     };
