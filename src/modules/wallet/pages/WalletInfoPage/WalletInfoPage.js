@@ -94,16 +94,6 @@ const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddres
                     <TableCell align="right">{`${balance} ${tokenInfo.symbol}`}</TableCell>
                     <TableCell align="right">${balanceUSD.toFixed(2)}</TableCell>
                 </TableRow>
-                <ModalComponent open={modalOpen} onClose={handleCloseModal}>
-                    <Grid container>
-                        <Grid item xs={10} textAlign='center'>
-                            <Typography>{modalAddress}</Typography>
-                        </Grid>
-                        <Grid item xs={2} textAlign='center'>
-                            <CopyToClipboardButton textToCopy={modalAddress} size='small' />
-                        </Grid>
-                    </Grid>
-                </ModalComponent>
             </>
         )
     };
@@ -123,7 +113,7 @@ const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddres
                             </Button>
                         </Grid>
                         <Grid item xs={2} textAlign='center'>
-                            <Divider orientation="vertical" sx={{width: '3px', margin: 'auto'}}/>
+                            <Divider orientation="vertical" sx={{ width: '3px', margin: 'auto' }} />
                         </Grid>
                         <Grid item xs={5} textAlign='left'>
                             <CopyToClipboardButton textToCopy={address} size='small' />
@@ -146,7 +136,7 @@ const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddres
                         </TableHead>
                         <TableBody>
                             {ETH && renderTokenRow({
-                                tokenInfo: {address, name: 'Etherium', symbol: 'Ether', decimals: "18", price: {rate: ETH.price.rate}},
+                                tokenInfo: { address, name: 'Etherium', symbol: 'Ether', decimals: "18", price: { rate: ETH.price.rate } },
                                 rawBalance: ETH.rawBalance,
                             })}
                             {tokens?.map(renderTokenRow)}
@@ -154,6 +144,16 @@ const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddres
                     </Table>
                 </TableContainer>
                 <Typography variant="h6">Total holdings: ${(calculateTotalTokensUSD(tokens) + mainCryptoBalanceUSD).toFixed(2)}</Typography>
+                <ModalComponent open={modalOpen} onClose={handleCloseModal}>
+                    <Grid container>
+                        <Grid item xs={matches ? 12 : 10} textAlign='center'>
+                            <Typography>{modalAddress}</Typography>
+                        </Grid>
+                        <Grid item xs={matches ? 12 : 2} textAlign='center'>
+                            <CopyToClipboardButton textToCopy={modalAddress} size='small' />
+                        </Grid>
+                    </Grid>
+                </ModalComponent>
             </Grid>
         </Grid>
     );
