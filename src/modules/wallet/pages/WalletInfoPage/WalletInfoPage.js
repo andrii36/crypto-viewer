@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, Box, Button } from "@mui/material";
+import React, { useEffect } from "react";
+import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, Box, Button, Divider } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from "react-router-dom";
 import styles from './WalletInfoPage.module.css';
 import json2mq from 'json2mq';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import CopyToClipboardButton from "../../../../sharedComponents/CopyToClickboardButton";
+import { shortenContractAddress } from "../../../../utils/portfolioDataUtils";
+import ModalComponent from "../../../../sharedComponents/ModalComponent";
 
 const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddress }) => {
     const navigate = useNavigate();
+    const [modalOpen, setModalOpen] = React.useState(false);
+    const [modalAddress, setModalAddress] = React.useState('');
 
     const matches = useMediaQuery(
         json2mq({
@@ -49,34 +53,58 @@ const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddres
     const mainCryptoBalance = convertWei(ETH?.rawBalance, 18);
     const mainCryptoBalanceUSD = Number(calculateUSDHoldings(ETH?.price.rate, mainCryptoBalance));
 
-    const shortenContractAddress = (fullAddress) => {
-        return fullAddress?.substring(fullAddress.length - 12);
-    };
-
     const deleteHandler = () => {
         clearWalletData();
     };
 
-    const renderTokenRow = ({ tokenInfo, rawBalance }) => {
+    const handleOpenModal = (address) => {
+        setModalAddress(address);
+        setModalOpen(true);
+    };
 
+    const handleCloseModal = () => {
+        setModalOpen(false);
+    };
+
+    const renderTokenRow = ({ tokenInfo, rawBalance }) => {
         const balance = convertWei(rawBalance, tokenInfo.decimals);
         const price = tokenInfo.price ? tokenInfo.price.rate : null;
-        const contractAddress = shortenContractAddress(tokenInfo.address);
         const balanceUSD = calculateUSDHoldings(price, balance);
 
         return (
-            <TableRow
-                key={tokenInfo.address}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-                <TableCell component="th" scope="row">
-                    {tokenInfo.name}
-                </TableCell>
-                <TableCell align="right">...{contractAddress}</TableCell>
-                <TableCell align="right">{price && `$${price.toFixed(2)}`}</TableCell>
-                <TableCell align="right">{`${balance} ${tokenInfo.symbol}`}</TableCell>
-                <TableCell align="right">${balanceUSD.toFixed(2)}</TableCell>
-            </TableRow>
+            <>
+                <TableRow
+                    key={tokenInfo.address}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                    <TableCell component="th" scope="row">
+                        {tokenInfo.name}
+                    </TableCell>
+                    <TableCell align="right">
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            sx={{ width: '120px', textTransform: 'none' }}
+                            onClick={() => handleOpenModal(tokenInfo.address)}
+                        >
+                            {`...${shortenContractAddress(tokenInfo.address)}`}
+                        </Button>
+                    </TableCell>
+                    <TableCell align="right">{price && `$${price.toFixed(2)}`}</TableCell>
+                    <TableCell align="right">{`${balance} ${tokenInfo.symbol}`}</TableCell>
+                    <TableCell align="right">${balanceUSD.toFixed(2)}</TableCell>
+                </TableRow>
+                <ModalComponent open={modalOpen} onClose={handleCloseModal}>
+                    <Grid container>
+                        <Grid item xs={10} textAlign='center'>
+                            <Typography>{modalAddress}</Typography>
+                        </Grid>
+                        <Grid item xs={2} textAlign='center'>
+                            <CopyToClipboardButton textToCopy={modalAddress} size='small' />
+                        </Grid>
+                    </Grid>
+                </ModalComponent>
+            </>
         )
     };
 
@@ -89,12 +117,15 @@ const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddres
                     </Typography>
                     <Typography>{address}</Typography>
                     <Grid container >
-                        <Grid item xs={6}>
+                        <Grid item xs={5} textAlign='right'>
                             <Button variant="outlined" startIcon={<DeleteIcon />} onClick={deleteHandler} size="small">
                                 Remove
                             </Button>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={2} textAlign='center'>
+                            <Divider orientation="vertical" sx={{width: '3px', margin: 'auto'}}/>
+                        </Grid>
+                        <Grid item xs={5} textAlign='left'>
                             <CopyToClipboardButton textToCopy={address} size='small' />
                         </Grid>
                     </Grid>
@@ -114,15 +145,10 @@ const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddres
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            <TableRow
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                                <TableCell component="th" scope="row">Etherium</TableCell>
-                                <TableCell align="right">...{shortenContractAddress(address)}</TableCell>
-                                <TableCell align="right">${ETH?.price.rate.toFixed(2)}</TableCell>
-                                <TableCell align="right">{mainCryptoBalance} Ether</TableCell>
-                                <TableCell align="right">${mainCryptoBalanceUSD.toFixed(2)}</TableCell>
-                            </TableRow>
+                            {ETH && renderTokenRow({
+                                tokenInfo: {address, name: 'Etherium', symbol: 'Ether', decimals: "18", price: {rate: ETH.price.rate}},
+                                rawBalance: ETH.rawBalance,
+                            })}
                             {tokens?.map(renderTokenRow)}
                         </TableBody>
                     </Table>
