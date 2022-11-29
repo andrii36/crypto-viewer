@@ -1,6 +1,5 @@
 .currentAddressBox {
-    margin: 10px 0 0 10px;
-    width: 68%;
+    margin: 10px;
     border-radius: 12px;
     border: white solid 1px;
     color: white;
@@ -9,7 +8,7 @@
 }
 
 .portfolioBox {
-    margin: 10px 10px 0 10px;
+    margin: 10px;
     padding: 10px;
     color: white;
     background-color: rgb(44, 44, 44);
@@ -28,10 +27,4 @@
     font-size: 14px;
     margin-top: 19px;
     align-items: center;
-}
-
-@media (max-width: 540px) {
-    .currentAddressBox {
-        width: 92%;
-    }
 }
