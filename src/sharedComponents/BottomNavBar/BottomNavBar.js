@@ -20,6 +20,7 @@ const BottomNavBar = () => {
                         navigate(`/${routes[newValue]}`);
                     }}
                     sx={{
+                        height: '45px',
                         width: '100%',
                         position: 'fixed',
                         bottom: 0,

@@ -5,7 +5,7 @@
     border: white solid 1px;
     color: white;
     text-align: left;
-    padding: 0 0 10px 10px;
+    padding: 10px;
 }
 
 .portfolioBox {
@@ -23,7 +23,7 @@
 }
 
 .portfolio_label_row {
-    color: #585858;
+    color: #797979;
     min-height: 35px;
     font-size: 14px;
     margin-top: 19px;
@@ -32,6 +32,6 @@
 
 @media (max-width: 540px) {
     .currentAddressBox {
-        width: 93%;
+        width: 92%;
     }
 }

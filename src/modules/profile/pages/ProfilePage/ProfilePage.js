@@ -1,13 +1,11 @@
 import React, { useEffect } from "react";
-import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, Box, Button, Divider } from "@mui/material";
+import { Grid, Typography, Box, Button, Divider, IconButton } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from "react-router-dom";
 import styles from './ProfilePage.module.css';
-import json2mq from 'json2mq';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import CopyToClipboardButton from "../../../../sharedComponents/CopyToClickboardButton";
-import { shortenContractAddress } from "../../../../utils/portfolioDataUtils";
 import ModalComponent from "../../../../sharedComponents/ModalComponent";
+import QRCode from "react-qr-code";
 
 const ProfilePage = ({ mainWalletData, clearWalletData, getDataByWalletAddress }) => {
     const navigate = useNavigate();
@@ -58,12 +56,12 @@ const ProfilePage = ({ mainWalletData, clearWalletData, getDataByWalletAddress }
         clearWalletData();
     };
 
-    const handleOpenModal = (address) => {
+    const handleOpenQRModal = (address) => {
         setModalAddress(address);
         setModalOpen(true);
     };
 
-    const handleCloseModal = () => {
+    const handleCloseQRModal = () => {
         setModalOpen(false);
     };
 
@@ -85,21 +83,23 @@ const ProfilePage = ({ mainWalletData, clearWalletData, getDataByWalletAddress }
         <Grid item spacing={2} container direction='column'>
             <Grid item>
                 <Box className={styles.currentAddressBox}>
-                    <Typography>
-                        Current address:
-                    </Typography>
-                    <Typography>{address}</Typography>
-                    <Grid container >
-                        <Grid item xs={5} textAlign='right'>
-                            <Button variant="outlined" startIcon={<DeleteIcon />} onClick={deleteHandler} size="small">
-                                Remove
-                            </Button>
+                    <Grid container alignItems='center'>
+                        <Grid item xs={11}>
+                            <Typography sx={{color: '#797979', fontSize: '14px'}}>Current address:</Typography>
                         </Grid>
-                        <Grid item xs={2} textAlign='center'>
-                            <Divider orientation="vertical" sx={{ width: '3px', margin: 'auto' }} />
+                        <Grid item xs={1}>
+                            <IconButton onClick={deleteHandler} color='primary' size="small">
+                                <DeleteIcon />
+                            </IconButton>
                         </Grid>
-                        <Grid item xs={5} textAlign='left'>
+                        <Grid item xs={12} sx={{marginBottom: '10px'}}>
+                            <Typography>{address}</Typography>
+                        </Grid>
+                        <Grid item xs={12} textAlign='right'>
                             <CopyToClipboardButton textToCopy={address} size='small' />
+                            <Button variant="outlined" size="small" onClick={() => handleOpenQRModal(address)} sx={{marginLeft: '10px'}}>
+                                Generate QR
+                            </Button>
                         </Grid>
                     </Grid>
                 </Box>
@@ -108,7 +108,7 @@ const ProfilePage = ({ mainWalletData, clearWalletData, getDataByWalletAddress }
                 <Box className={styles.portfolioBox}>
                     <Grid container>
                         <Grid item xs={12}>
-                            <Typography variant="h6" sx={{margin: '5px 0 19px 0'}}>
+                            <Typography variant="h6" sx={{ margin: '5px 0 19px 0' }}>
                                 Portfolio total: ${(calculateTotalTokensUSD(filteredTokens) + mainCryptoBalanceUSD).toFixed(2)}
                             </Typography>
                             <Divider light sx={{ bgcolor: '#DAA520' }} />
@@ -131,6 +131,9 @@ const ProfilePage = ({ mainWalletData, clearWalletData, getDataByWalletAddress }
                     </Grid>
                 </Box>
             </Grid>
+            <ModalComponent open={modalOpen} onClose={handleCloseQRModal} sx={{width: 260}}>
+                <QRCode value={modalAddress} />
+            </ModalComponent>
         </Grid>
     );
 };
