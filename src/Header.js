@@ -1,12 +1,12 @@
 import React from "react";
-import { AppBar, Container, Drawer, IconButton, Toolbar, Typography } from '@mui/material';
+import { AppBar, Grid, IconButton, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
 const Header = () => {
     return (
-        <AppBar position="static">
-            <Container maxWidth="xl">
-                <Toolbar disableGutters>
+        <Grid item container >
+            <AppBar position="sticky">
+                <Toolbar >
                     <IconButton
                         size="large"
                         edge="start"
@@ -34,11 +34,8 @@ const Header = () => {
                         CryptoAura
                     </Typography>
                 </Toolbar>
-                <Drawer>
-
-                </Drawer>
-            </Container>
-        </AppBar>
+            </AppBar>
+        </Grid>
     )
 }
 

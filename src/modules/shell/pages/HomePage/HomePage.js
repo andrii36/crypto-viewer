@@ -8,7 +8,7 @@ const HomePage = ({mainWalletAddress, getDataByWalletAddress}) => {
 
     useEffect(() => {
         if(mainWalletAddress){
-            navigate('/wallet');
+            navigate('/profile');
             return;
         };
     }, [mainWalletAddress]);
@@ -24,11 +24,11 @@ const HomePage = ({mainWalletAddress, getDataByWalletAddress}) => {
     }
 
     return (
-        <Container maxWidth={false}>
+        <Container maxWidth={false} sx={{color: 'white'}}>
             <Typography
                 variant='h6'
             >
-                Welcome to the Crypto Viewer
+                Welcome to CryptoAura
             </Typography>
             <Input
                 id="standard-input"

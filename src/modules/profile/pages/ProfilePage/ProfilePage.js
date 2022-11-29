@@ -2,25 +2,26 @@ import React, { useEffect } from "react";
 import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, Box, Button, Divider } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from "react-router-dom";
-import styles from './WalletInfoPage.module.css';
+import styles from './ProfilePage.module.css';
 import json2mq from 'json2mq';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import CopyToClipboardButton from "../../../../sharedComponents/CopyToClickboardButton";
 import { shortenContractAddress } from "../../../../utils/portfolioDataUtils";
 import ModalComponent from "../../../../sharedComponents/ModalComponent";
 
-const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddress }) => {
+const ProfilePage = ({ mainWalletData, clearWalletData, getDataByWalletAddress }) => {
     const navigate = useNavigate();
     const [modalOpen, setModalOpen] = React.useState(false);
     const [modalAddress, setModalAddress] = React.useState('');
 
-    const matches = useMediaQuery(
-        json2mq({
-            maxWidth: 540,
-        }),
-    );
+    // const matches = useMediaQuery(
+    //     json2mq({
+    //         maxWidth: 540,
+    //     }),
+    // );
 
     const { tokens, ETH, address } = mainWalletData;
+    const filteredTokens = tokens?.filter(({ tokenInfo }) => tokenInfo.price);
 
     useEffect(() => {
         getDataByWalletAddress(address);
@@ -72,35 +73,17 @@ const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddres
         const balanceUSD = calculateUSDHoldings(price, balance);
 
         return (
-            <>
-                <TableRow
-                    key={tokenInfo.address}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                    <TableCell component="th" scope="row">
-                        {tokenInfo.name}
-                    </TableCell>
-                    <TableCell align="right">
-                        <Button
-                            variant="outlined"
-                            size="small"
-                            sx={{ width: '120px', textTransform: 'none' }}
-                            onClick={() => handleOpenModal(tokenInfo.address)}
-                        >
-                            {`...${shortenContractAddress(tokenInfo.address)}`}
-                        </Button>
-                    </TableCell>
-                    <TableCell align="right">{price && `$${price.toFixed(2)}`}</TableCell>
-                    <TableCell align="right">{`${balance} ${tokenInfo.symbol}`}</TableCell>
-                    <TableCell align="right">${balanceUSD.toFixed(2)}</TableCell>
-                </TableRow>
-            </>
+            <Grid item xs={12} textAlign='left' container className={styles.token_grid_row}>
+                <Grid item xs={4} >{tokenInfo.name}</Grid>
+                <Grid item xs={4} >{price && `$${price.toFixed(2)}`}</Grid>
+                <Grid item xs={4} >{`${tokenInfo.symbol} ${Number(balance).toFixed(5)} / $${balanceUSD.toFixed(2)}`}</Grid>
+            </Grid>
         )
     };
 
     return (
-        <Grid container spacing={2}>
-            <Grid item xs={matches ? 12 : 4} className={styles.currentAddress}>
+        <Grid item spacing={2} container direction='column'>
+            <Grid item>
                 <Box className={styles.currentAddressBox}>
                     <Typography>
                         Current address:
@@ -121,42 +104,35 @@ const WalletInfoPage = ({ mainWalletData, clearWalletData, getDataByWalletAddres
                     </Grid>
                 </Box>
             </Grid>
-            <Grid item xs={matches ? 12 : 8}>
-                <Typography variant="h5">Portfolio</Typography>
-                <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Token</TableCell>
-                                <TableCell align="right">Contract Address</TableCell>
-                                <TableCell align="right">Price</TableCell>
-                                <TableCell align="right">Holdings</TableCell>
-                                <TableCell align="right">USD Holdings</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {ETH && renderTokenRow({
-                                tokenInfo: { address, name: 'Etherium', symbol: 'Ether', decimals: "18", price: { rate: ETH.price.rate } },
-                                rawBalance: ETH.rawBalance,
-                            })}
-                            {tokens?.map(renderTokenRow)}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <Typography variant="h6">Total holdings: ${(calculateTotalTokensUSD(tokens) + mainCryptoBalanceUSD).toFixed(2)}</Typography>
-                <ModalComponent open={modalOpen} onClose={handleCloseModal}>
+            <Grid item >
+                <Box className={styles.portfolioBox}>
                     <Grid container>
-                        <Grid item xs={matches ? 12 : 10} textAlign='center'>
-                            <Typography>{modalAddress}</Typography>
+                        <Grid item xs={12}>
+                            <Typography variant="h6" sx={{margin: '5px 0 19px 0'}}>
+                                Portfolio total: ${(calculateTotalTokensUSD(filteredTokens) + mainCryptoBalanceUSD).toFixed(2)}
+                            </Typography>
+                            <Divider light sx={{ bgcolor: '#DAA520' }} />
                         </Grid>
-                        <Grid item xs={matches ? 12 : 2} textAlign='center'>
-                            <CopyToClipboardButton textToCopy={modalAddress} size='small' />
+                        <Grid item xs={12} textAlign='left' >
+                            <Box className={styles.portfolio_label_row}>
+                                <Grid container>
+                                    <Grid item xs={4} >Token</Grid>
+                                    <Grid item xs={4} >Price</Grid>
+                                    <Grid item xs={4} >Holdings / USD</Grid>
+                                </Grid>
+                            </Box>
                         </Grid>
+
+                        {ETH && renderTokenRow({
+                            tokenInfo: { address, name: 'Etherium', symbol: 'Ether', decimals: "18", price: { rate: ETH.price.rate } },
+                            rawBalance: ETH.rawBalance,
+                        })}
+                        {filteredTokens?.map(renderTokenRow)}
                     </Grid>
-                </ModalComponent>
+                </Box>
             </Grid>
         </Grid>
     );
 };
 
-export default WalletInfoPage;
+export default ProfilePage;
