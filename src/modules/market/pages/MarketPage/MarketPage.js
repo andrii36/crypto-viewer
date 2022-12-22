@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Typography } from "@mui/material";
+import { Divider, Grid, Typography } from "@mui/material";
 import styles from './MarketPage.module.css';
 
 const MarketPage = ({ tokens, getTopTokensData }) => {
@@ -23,10 +23,13 @@ const MarketPage = ({ tokens, getTopTokensData }) => {
                     <Typography>{'$' + Number(rate).toFixed(2)}</Typography>
                     <Typography 
                         color={diffIsPositive ? 'green' : 'red'} 
-                        sx={{fontSize: '12px', marginBottom: '5px'}}
+                        sx={{fontSize: '12px', marginBottom: '3px'}}
                     >
                         {diff7dFormatted}
                     </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Divider light sx={{ bgcolor: '#797979' }} />
                 </Grid>
             </Grid>
         );

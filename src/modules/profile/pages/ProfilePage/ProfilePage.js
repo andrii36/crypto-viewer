@@ -111,7 +111,7 @@ const ProfilePage = ({ mainWalletData, clearWalletData, getDataByWalletAddress }
                             <Typography variant="h6" sx={{ margin: '5px 0 19px 0' }}>
                                 Portfolio total: ${(calculateTotalTokensUSD(filteredTokens) + mainCryptoBalanceUSD).toFixed(2)}
                             </Typography>
-                            <Divider light sx={{ bgcolor: '#DAA520' }} />
+                            <Divider light sx={{ bgcolor: '#797979' }} />
                         </Grid>
                         <Grid item xs={12} textAlign='left' >
                             <Box className={styles.portfolio_label_row}>
