@@ -7,7 +7,7 @@ const instance = axios.create({
 });
 
 export default {
-    getDataByWalletAddress: (walletAddress) => {
-        return instance.get(`/getAddressInfo/${walletAddress}`, { params: { apiKey } });
+    getTopTokens: () => {
+        return instance.get('/getTop', { params: { apiKey} });
     }
 };
