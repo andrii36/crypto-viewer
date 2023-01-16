@@ -1,10 +1,10 @@
 import { connect } from "react-redux";
 import ProfilePage from "./ProfilePage";
-import { clearWalletData } from "../../../shell/actions/shellActions";
 import { getDataByWalletAddress } from "../../../shell/actions/shellActions";
+import { clearWalletAddress } from "../../../shell/reducers/walletSearch";
 
 const mapStateToProps = ({shellModule}) => ({
     mainWalletData: shellModule.walletSearch.mainWalletData,
 });
 
-export default connect(mapStateToProps, {clearWalletData, getDataByWalletAddress})(ProfilePage);
+export default connect(mapStateToProps, {clearWalletAddress, getDataByWalletAddress})(ProfilePage);

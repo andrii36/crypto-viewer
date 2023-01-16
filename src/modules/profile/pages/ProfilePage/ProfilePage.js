@@ -7,7 +7,7 @@ import CopyToClipboardButton from "../../../../sharedComponents/CopyToClickboard
 import ModalComponent from "../../../../sharedComponents/ModalComponent";
 import QRCode from "react-qr-code";
 
-const ProfilePage = ({ mainWalletData, clearWalletData, getDataByWalletAddress }) => {
+const ProfilePage = ({ mainWalletData, clearWalletAddress, getDataByWalletAddress }) => {
     const navigate = useNavigate();
     const [modalOpen, setModalOpen] = React.useState(false);
     const [modalAddress, setModalAddress] = React.useState('');
@@ -53,7 +53,7 @@ const ProfilePage = ({ mainWalletData, clearWalletData, getDataByWalletAddress }
     const mainCryptoBalanceUSD = Number(calculateUSDHoldings(ETH?.price.rate, mainCryptoBalance));
 
     const deleteHandler = () => {
-        clearWalletData();
+        clearWalletAddress();
     };
 
     const handleOpenQRModal = (address) => {

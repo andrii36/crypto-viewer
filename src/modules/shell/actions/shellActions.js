@@ -1,17 +1,12 @@
-import actionTypes from "./actionTypes";
 import api from '../../../api';
+import { getDataByWalletAddressLoading, getDataByWalletAddressSuccess } from "../reducers/walletSearch";
 
 export const getDataByWalletAddress = (walletAddress) => async (dispatch) => {
-    dispatch({type: actionTypes.GET_DATA_BY_WALLET_ADDRESS_LOADING});
+    dispatch(getDataByWalletAddressLoading());
     try{
         const response = await api.wallet.getDataByWalletAddress(walletAddress);
-        dispatch({
-            type: actionTypes.GET_DATA_BY_WALLET_ADDRESS_SUCCESS,
-            payload: response.data
-        })
+        dispatch(getDataByWalletAddressSuccess(response.data))
     }catch(error){
         console.log(error)
     }
 };
-
-export const clearWalletData = () => ({type: actionTypes.CLEAR_WALLET_ADDRESS});

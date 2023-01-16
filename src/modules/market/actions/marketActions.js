@@ -1,14 +1,11 @@
-import actionTypes from "./actionTypes";
 import api from '../../../api';
+import { getTopTokensDataSuccess, getTopTokensLoading } from "../reducers/marketData";
 
 export const getTopTokensData = () => async (dispatch) => {
-    dispatch({type: actionTypes.GET_TOP_TOKENS_LOADING});
+    dispatch(getTopTokensLoading());
     try{
-        const response = await api.market.getTopTokens();
-        dispatch({
-            type: actionTypes.GET_TOP_TOKENS_DATA_SUCCESS,
-            payload: response.data.tokens
-        });
+        const {data} = await api.market.getTopTokens();
+        dispatch(getTopTokensDataSuccess(data.tokens))
     }catch(error){
         console.log(error)
     }
